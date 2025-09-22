@@ -1,2 +1,6 @@
-/orig
-/*.tar.*
+# Temporary files
+__pycache__
+.mypy_cache
+
+# Generated files
+/*.bdf
