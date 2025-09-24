@@ -26,11 +26,28 @@ class BdfFont(Font): # type: ignore
 
 	@property
 	def bbW(self) -> int:
-		return int(self.glyphs_by_codepoint[ord(' ')].bbW)
+		return int(self.get_reference_char().bbW)
 
 	@property
 	def bbH(self) -> int:
-		return int(self.glyphs_by_codepoint[ord(' ')].bbH)
+		return int(self.get_reference_char().bbH)
+
+	def get_reference_char(self) -> Glyph:
+		glyph = self[ord(' ')]
+		if not isinstance(glyph, Glyph):
+			raise ValueError('No valid reference character found.')
+		return glyph
+
+	def create_glyph(self, key: int) -> Glyph:
+		g = self.get_reference_char()
+		glyph = Glyph(
+			# an empty but valid glyph
+			f'uni{key:04X}'.encode(), self.get_reference_char().data,
+			g.bbX, g.bbY, g.bbW, g.bbH, g.advance, key
+		)
+		self.glyphs.append(glyph)
+		self.glyphs_by_codepoint[key] = glyph
+		return glyph
 
 	def save(self, file_name: str) -> None:
 		with open(file_name, 'wb') as f:
