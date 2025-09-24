@@ -2,7 +2,7 @@
 # vim:set ts=4
 
 from bdf_font.glyph import Glyph
-from bdflib.model import Font, Glyph as FontGlyph
+from bdflib.model import Font
 from bdflib import reader, writer
 from typing import Union
 
@@ -19,11 +19,18 @@ class BdfFont(Font): # type: ignore
 		# already initialised by the reader factory
 		pass
 
-	def __getitem__(self, key: Union[bytes, int]) -> Union[PropertyValue, FontGlyph]:
-		ret = super().__getitem__(key)
-		if isinstance(ret, FontGlyph):
-			ret.__class__ = Glyph
-		return ret
+	def __getitem__(self, key: int) -> Glyph:
+		ret = self.glyphs_by_codepoint[key]
+		ret.__class__ = Glyph
+		return ret # type: ignore
+
+	@property
+	def bbW(self) -> int:
+		return int(self.glyphs_by_codepoint[ord(' ')].bbW)
+
+	@property
+	def bbH(self) -> int:
+		return int(self.glyphs_by_codepoint[ord(' ')].bbH)
 
 	def save(self, file_name: str) -> None:
 		with open(file_name, 'wb') as f:
