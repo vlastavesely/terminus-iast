@@ -16,7 +16,10 @@ FONTS_BOLD = $(patsubst %, ter-u%b.bdf, $(SIZES))
 
 
 all: .venv $(ORIG_FONTS)
-	$(VENV); PYTHONPATH=$(PWD) $(PYTHON) generate.py
+	$(VENV); PYTHONPATH=$(PWD) $(PYTHON) bin/generate.py
+
+%.png:
+	$(VENV); PYTHONPATH=$(PWD) $(PYTHON) bin/dump.py $*
 
 $(TARBALL):
 	$(QUIET_GET) wget $(TARBALL_URI) -qO$@
@@ -34,7 +37,8 @@ mypy:
 	PYTHONPATH=$(PWD) mypy --strict .
 
 clean:
-	$(RM) -r .venv */__pycache__ .mypy_cache *.bdf orig $(TARBALL)
+	$(RM) -r .venv */__pycache__ .mypy_cache
+	$(RM) $(TARBALL) *.bdf *.png orig
 
 ifndef V
 QUIET_GEN   = @echo "  GEN    $@";

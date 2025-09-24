@@ -11,6 +11,12 @@ class Terminus:
 	def __init__(self, files: List[str]) -> None:
 		self.fonts = {file: BdfFont(file) for file in files}
 
+	@classmethod
+	def create(cls, src: str) -> 'Terminus':
+		sizes = [12, 14, 16, 18, 20, 22, 24, 28, 32]
+		files = [f'{src}/ter-u{s}{w}.bdf' for s in sizes for w in ('n', 'b')]
+		return cls(files)
+
 	def __getitem__(self, key: int) -> Image:
 		glyphs = self.find_glyph(key)
 		w, h = self.calculate_image_size(glyphs)
