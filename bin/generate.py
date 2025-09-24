@@ -8,6 +8,7 @@ from PIL import Image
 from terminus.terminus import Terminus
 
 terminus = Terminus.create('orig')
+terminus.family_name = 'Terminus IAST'
 
 for file in Path('glyph').glob('**'):
 	if file.is_dir():

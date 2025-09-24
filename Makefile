@@ -14,8 +14,12 @@ ORIG_FONTS = $(ORIG_REGULAR) $(ORIG_BOLD)
 FONTS_REGULAR = $(patsubst %, ter-u%n.bdf, $(SIZES))
 FONTS_BOLD = $(patsubst %, ter-u%b.bdf, $(SIZES))
 
+GLYPHS = $(shell find glyph -name '*.png')
 
-all: .venv $(ORIG_FONTS)
+
+all: .venv ter-iast-regular.otb ter-iast-bold.otb
+
+%.bdf: $(GLYPHS)
 	$(VENV); PYTHONPATH=$(PWD) $(PYTHON) bin/generate.py
 
 %.png:
@@ -29,6 +33,12 @@ $(ORIG_FONTS): $(TARBALL)
 	$(QUIET_UNTAR) tar --xform="s/$(TARBALL_DIR)/orig/"	\
 		-xf $(TARBALL) $(TARBALL_DIR)/$(notdir $@) && touch $@
 
+ter-iast-regular.otb: $(FONTS_REGULAR)
+	$(QUIET_GEN) fontforge -quiet -lang=ff -script fontmerge.ff $@ $^ 2>/dev/null
+
+ter-iast-bold.otb: $(FONTS_BOLD)
+	$(QUIET_GEN) fontforge -quiet -lang=ff -script fontmerge.ff $@ $^ 2>/dev/null
+
 .venv:
 	$(PYTHON) -m venv .venv
 	$(VENV); pip install -r requirements.txt
@@ -38,7 +48,7 @@ mypy:
 
 clean:
 	$(RM) -r .venv */__pycache__ .mypy_cache
-	$(RM) $(TARBALL) *.bdf *.png orig
+	$(RM) $(TARBALL) *.bdf *.png orig *.otb
 
 ifndef V
 QUIET_GEN   = @echo "  GEN    $@";

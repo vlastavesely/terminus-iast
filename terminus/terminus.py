@@ -36,6 +36,16 @@ class Terminus:
 			glyph.from_bitmap(bmp)
 			x += font.bbW + 1
 
+	@property
+	def family_name(self) -> str:
+		print(next(self.fonts))
+		return next(self.fonts)[b'FAMILY_NAME'].decode()
+
+	@family_name.setter
+	def family_name(self, name: str) -> None:
+		for font in self.fonts.values():
+			font[b'FAMILY_NAME'] = name.encode()
+
 	def find_glyph(self, key: int) -> List[Glyph]:
 		return [
 			v for font in self.fonts.values() if isinstance(v := font[key], Glyph)
