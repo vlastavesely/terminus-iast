@@ -24,11 +24,11 @@ GLYPHS = $(shell find glyph -name '*.png')
 
 all: .venv ter-iast-regular.otb ter-iast-bold.otb
 
-%.bdf: $(GLYPHS)
-	$(VENV); PYTHONPATH=$(PWD) $(PYTHON) bin/generate.py
+%.bdf: $(GLYPHS) $(ORIG_FONTS)
+	$(VENV); PYTHONPATH=$(shell pwd) $(PYTHON) bin/generate.py
 
 %.png:
-	$(VENV); PYTHONPATH=$(PWD) $(PYTHON) bin/dump.py $*
+	$(VENV); PYTHONPATH=$(shell pwd) $(PYTHON) bin/dump.py $*
 
 $(TARBALL):
 	$(QUIET_GET) wget $(TARBALL_URI) -qO$@
@@ -49,7 +49,7 @@ ter-iast-bold.otb: $(FONTS_BOLD)
 	$(VENV); pip install -r requirements.txt
 
 mypy:
-	PYTHONPATH=$(PWD) mypy --strict .
+	PYTHONPATH=$(shell pwd) mypy --strict .
 
 install:
 	install -m 0755 -d $(fontsdir)/opentype/terminus-iast $(sysconfdir)/fonts/conf.d
@@ -63,8 +63,8 @@ enable:
 	fc-cache -fv
 
 clean:
-	$(RM) -r .venv */__pycache__ .mypy_cache
-	$(RM) $(TARBALL) *.bdf *.png orig *.otb
+	$(RM) -r .venv */__pycache__ .mypy_cache orig
+	$(RM) $(TARBALL) *.bdf *.png *.otb
 
 ifndef V
 QUIET_GEN   = @echo "  GEN    $@";
