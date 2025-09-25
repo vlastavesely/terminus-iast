@@ -1,6 +1,11 @@
 PYTHON = python3
 VENV = . .venv/bin/activate
 
+prefix = /usr
+datadir = $(prefix)/share
+fontsdir = $(datadir)/fonts
+sysconfdir = /etc
+
 TARBALL = xfonts-terminus_4.48.orig.tar.gz
 TARBALL_URI = http://ftp.cz.debian.org/debian/pool/main/x/xfonts-terminus/$(TARBALL)
 TARBALL_DIR = xfonts-terminus-4.48.orig
@@ -45,6 +50,17 @@ ter-iast-bold.otb: $(FONTS_BOLD)
 
 mypy:
 	PYTHONPATH=$(PWD) mypy --strict .
+
+install:
+	install -m 0755 -d $(fontsdir)/opentype/terminus-iast $(sysconfdir)/fonts/conf.d
+	install -m 0644 *.otb $(fontsdir)/opentype/terminus-iast
+	install -m 0644 50-enable-terminus-iast.conf $(sysconfdir)/fonts/conf.d
+
+uninstall:
+	$(RM) -r $(fontsdir)/opentype/terminus-iast
+
+enable:
+	fc-cache -fv
 
 clean:
 	$(RM) -r .venv */__pycache__ .mypy_cache
