@@ -38,8 +38,11 @@ class Terminus:
 
 	@property
 	def family_name(self) -> str:
-		print(next(self.fonts))
-		return next(self.fonts)[b'FAMILY_NAME'].decode()
+		first_font = next(iter(self.fonts.values()))
+		name = first_font[b'FAMILY_NAME']
+		if not isinstance(name, bytes):
+			raise ValueError(f'invalid family name')
+		return name.decode()
 
 	@family_name.setter
 	def family_name(self, name: str) -> None:

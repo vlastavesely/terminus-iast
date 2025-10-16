@@ -14,6 +14,7 @@ class TestBdfFont(unittest.TestCase):
 
 	def test_bdf_font_load(self) -> None:
 		font = self.load_test_font()
+		self.assertEqual(font[b'FAMILY_NAME'], b'Terminus IAST')
 		self.assertTrue(isinstance(font, BdfFont))
 		self.assertEqual(font.bbW, 6)
 		self.assertEqual(font.bbH, 12)

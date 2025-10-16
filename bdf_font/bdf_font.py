@@ -4,9 +4,9 @@
 from bdf_font.glyph import Glyph
 from bdflib.model import Font
 from bdflib import reader, writer
-from typing import Union
+from typing import cast, overload
 
-PropertyValue = Union[bytes, int]
+PropertyValue = bytes | int
 
 class BdfFont(Font): # type: ignore
 	def __new__(cls, file_name: str): # type: ignore
@@ -19,10 +19,19 @@ class BdfFont(Font): # type: ignore
 		# already initialised by the reader factory
 		pass
 
-	def __getitem__(self, key: int) -> Glyph:
+	@overload
+	def __getitem__(self, key: bytes) -> PropertyValue: ...
+
+	@overload
+	def __getitem__(self, key: int) -> Glyph: ...
+
+	def __getitem__(self, key: bytes | int) -> PropertyValue | Glyph:
+		if isinstance(key, bytes):
+			ret = self.properties[key]
+			return cast(int | bytes, ret)
 		ret = self.glyphs_by_codepoint[key]
 		ret.__class__ = Glyph
-		return ret # type: ignore
+		return cast(Glyph, ret)
 
 	@property
 	def bbW(self) -> int:
