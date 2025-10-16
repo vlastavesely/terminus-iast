@@ -33,7 +33,8 @@ class BdfFont(Font): # type: ignore
 		return int(self.get_reference_char().bbH)
 
 	def get_reference_char(self) -> Glyph:
-		glyph = self[ord(' ')]
+		first_key = next(iter(self.glyphs_by_codepoint))
+		glyph = self[first_key]
 		if not isinstance(glyph, Glyph):
 			raise ValueError('No valid reference character found.')
 		return glyph

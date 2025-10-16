@@ -48,8 +48,13 @@ ter-iast-bold.otb: $(FONTS_BOLD)
 	$(PYTHON) -m venv .venv
 	$(VENV); pip install -r requirements.txt
 
+check: test mypy
+
 mypy:
 	PYTHONPATH=$(shell pwd) mypy --strict .
+
+test: .venv
+	$(VENV); PYTHONPATH=$(shell pwd) $(PYTHON) -m unittest discover -s tests
 
 install:
 	install -m 0755 -d $(fontsdir)/opentype/terminus-iast $(sysconfdir)/fonts/conf.d
