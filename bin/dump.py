@@ -9,7 +9,7 @@ file = f'{argv[1]}.png'
 terminus = Terminus.create('orig')
 
 image = terminus[int(argv[1], 16)]
-print('Saving {file} …')
+print(f'Saving {file} …')
 image.save(f'{file}')
 
 terminus.save()
